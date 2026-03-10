@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identity Verification | Secure Gateway</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    
+    <style>
+        body {
+            background-color: #f9f8f4;
+            color: #1a1a1a;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .container {
+            max-width: 550px;
+            padding: 60px 50px;
+            border: 1px solid rgba(229, 229, 225, 0.8);
+            background: rgba(249, 248, 244, 0.85);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.04);
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 400;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+        p {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        input {
+            width: 80%;
+            padding: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(26, 26, 26, 0.3);
+            outline: none;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: 0.3s;
+        }
+        input:focus {
+            border-bottom: 1px solid #1a1a1a;
+        }
+        button {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: #1a1a1a;
+            transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        button:hover {
+            opacity: 0.5;
+            letter-spacing: 1px;
+        }
+        #message {
+            margin-top: 40px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            font-weight: 400;
+            min-height: 60px;
+        }
+        .success-text {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+        .error-text {
+            color: #d9534f;
+            font-style: italic;
+        }
+        .profile-link {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 24px;
+            border: 1px solid #1a1a1a;
+            color: #1a1a1a;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.4s ease;
+        }
+        .profile-link:hover {
+            background-color: #1a1a1a;
+            color: #f9f8f4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Authorization Required</h1>
+        <p>Enter the master key to verify the cryptographic ownership of this developer account.</p>
+        
+        <input type="password" id="passInput" placeholder="ENTER KEY" onkeypress="if(event.key === 'Enter') authenticate()">
+        <br>
+        <button onclick="authenticate()">Verify Identity &mdash;</button>
+
+        <div id="message"></div>
+    </div>
+
+    <script>
+        function authenticate() {
+            const input = document.getElementById('passInput').value.trim().toUpperCase();
+            const msgBox = document.getElementById('message');
+            
+            // =================================================================
+            // DEVELOPER SETUP MODE (Delete this block after generating your key)
+            // =================================================================
+            if (input === "ENCRYPT_MY_MESSAGE") {
+                const secretMessage = "IDENTITY CONFIRMED. This GitHub account and its repositories are officially owned and authored by Yash Mehar.";
+                const encrypted = CryptoJS.AES.encrypt(secretMessage, "12TULIPS").toString();
+                msgBox.innerHTML = `<strong>Setup Success!</strong> Copy this ciphertext and paste it into the 'cipherText' variable below:<br><br><span style="word-break: break-all; font-size: 0.8rem; color: #d9534f;">${encrypted}</span>`;
+                return;
+            }
+            // =================================================================
+
+            // --- SECURE VERIFICATION ---
+            // Paste the ciphertext you generated here:
+            const cipherText = "PASTE_YOUR_GENERATED_CIPHERTEXT_HERE";
+
+            try {
+                // The system attempts to decrypt the math using the user's input as the key
+                const bytes = CryptoJS.AES.decrypt(cipherText, input);
+                const originalText = bytes.toString(CryptoJS.enc.Utf8);
+
+                // If the key is right, the text converts perfectly and triggers the success state
+                if (originalText.includes("IDENTITY CONFIRMED")) {
+                    msgBox.innerHTML = `<span class="success-text">✓ ${originalText}</span><br><a href="https://github.com/YOUR-ALT-ACCOUNT-NAME" class="profile-link">Proceed to Verified Profile</a>`;
+                } else {
+                    throw new Error("Invalid Key");
+                }
+            } catch (e) {
+                // If the key is wrong, the decryption fails mathematically and throws this error
+                msgBox.innerHTML = `<span class="error-text">Access Denied. Invalid cryptographic signature.</span>`;
+            }
+        }
+    </script>
+</body>
+</html>
