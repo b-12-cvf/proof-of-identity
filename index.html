@@ -127,20 +127,9 @@
             const input = document.getElementById('passInput').value.trim().toUpperCase();
             const msgBox = document.getElementById('message');
             
-            // =================================================================
-            // DEVELOPER SETUP MODE (Delete this block after generating your key)
-            // =================================================================
-            if (input === "ENCRYPT_MY_MESSAGE") {
-                const secretMessage = "IDENTITY CONFIRMED. This GitHub account and its repositories are officially owned and authored by Yash Mehar.";
-                const encrypted = CryptoJS.AES.encrypt(secretMessage, "12TULIPS").toString();
-                msgBox.innerHTML = `<strong>Setup Success!</strong> Copy this ciphertext and paste it into the 'cipherText' variable below:<br><br><span style="word-break: break-all; font-size: 0.8rem; color: #d9534f;">${encrypted}</span>`;
-                return;
-            }
-            // =================================================================
-
             // --- SECURE VERIFICATION ---
             // Paste the ciphertext you generated here:
-            const cipherText = "PASTE_YOUR_GENERATED_CIPHERTEXT_HERE";
+            const cipherText = "U2FsdGVkX18Kgd/g7pF/rIh9La3LSq5Ux5yUCBPmQ2ASlc5Y8FgMMUgJNb8waWACN1nZD3buHRGLUn0p844Shg1PMxNf2LhSWhKe9nLSyNkJWgN7MgX2cCE6jMvgfioObSqvwyQJh5DwAQAs+a8nuKJzY2eMu+4OHO+dy1KynDc=";
 
             try {
                 // The system attempts to decrypt the math using the user's input as the key
